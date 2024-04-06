@@ -21,6 +21,23 @@ import {
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
+const localDevNet = {
+  id: 2930922759901093,
+  name: 'Local IPC Subnet',
+  network: 'Local IPC Subnet',
+  iconBackground: '#fff',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'tFIL',
+    symbol: 'tFIL',
+  },
+  rpcUrls: {
+    public: { http: ['http://localhost:8545'] },
+    default: { http: ['http://localhost:8545'] },
+  },
+  testnet: true,
+};
+
 const config = getDefaultConfig({
   appName: "Shady",
   projectId:
@@ -32,7 +49,8 @@ const config = getDefaultConfig({
     // sepolia,
     // optimismSepolia,
     // arbitrumSepolia,
-    polygonMumbai,
+    // polygonMumbai,
+    localDevNet
   ],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
