@@ -20,7 +20,7 @@ export default function CreateWallet() {
   return (
     <div className="grid w-full gap-2 mt-10">
       <h1 className="font-bold text-center">
-        Let&apos;s get started by creating a subnet wallet first!
+        Let&apos;s get started by creating a subnet first!
       </h1>
       <Button
         className="inline-block"
@@ -34,7 +34,7 @@ export default function CreateWallet() {
           // });
         }}
       >
-        Create Subnet Wallet
+        Setup your subnet
       </Button>
     </div>
   );

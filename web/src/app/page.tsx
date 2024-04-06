@@ -34,12 +34,12 @@ export default function Home() {
       <section className="lg:max-w-5xl lg:w-full ">
         <div className="text-zinc-400 text-center mb-2">
           {" "}
-          &quot;shady&quot; is a Privacy enabled Prediction market that
+          &quot;shady&quot; is a Privacy enabled Prediction market that runs on IPC subnets and
           let&apos;s you encrypt your votes to prevent copy-trading and market
           manipulations.{" "}
         </div>{" "}
         <div className="ring-1 ring-zinc-700 rounded-xl p-8 w-full">
-          {!account?.address ? (
+          {/* {!account?.address ? (
             <div className="flex justify-center items-center flex-col">
               <h3 className="text-md mb-5">
                 Connect your wallet to get started
@@ -58,7 +58,10 @@ export default function Home() {
                 </div>
               )}
             </div>
-          )}
+          )} */}
+          <div className="mt-2 flex justify-center items-between flex-col w-full">
+            <CreateWallet />
+          </div>
         </div>
         <p className="text-md mt-3 text-center text-zinc-600">
           Powered by{" "}

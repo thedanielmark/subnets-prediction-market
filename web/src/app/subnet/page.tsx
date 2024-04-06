@@ -9,16 +9,18 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { API_URL } from "@/lib/utils";
 import { Loader2 } from "lucide-react"
-import { createPublicClient, http } from "viem";
+import { useRouter } from "next/navigation";
 
 
 export default function Home() {
-    const [operatorWalletAddress, setOperatorWalletAddress] = useState("0x000000000000000000000000")
-    const [subnetId, setSubnetId] = useState("/r313459/secret-validators")
+    const [operatorWalletAddress, setOperatorWalletAddress] = useState("0xa84aae174873882b41354c1bb46fbc315966067a")
+    const [subnetId, setSubnetId] = useState("/r314159/t410f5fl3pzoj4baizvsbc53nydofrfhihzdclckrvvy")
     const [createWalletLoading, setCreateWalletLoading] = useState(false)
     const [createSubnetLoading, setCreateSubnetLoading] = useState(false)
     const [createValidatorLoading, setCreateValidatorLoading] = useState(false)
     const [deploySubnetLoading, setDeploySubnetLoading] = useState(false)
+    const [deployMarketLoading, setDeployMarketLoading] = useState(false)
+    const router = useRouter();
 
     useEffect(() => { }, []);
 
@@ -92,7 +94,22 @@ export default function Home() {
         setDeploySubnetLoading(false)
     }
 
-    const deployMarket = async () => {}
+    const deployMarket = async () => {
+        console.log('Deploying market...')
+        setDeployMarketLoading(true)
+        const data = await fetch(`${API_URL}/deploy-market`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                address: operatorWalletAddress,
+            }),
+        })
+        const res = await data.json()
+        console.log(res)
+        setDeployMarketLoading(false)
+    }
 
     return (
         <main className="container flex min-h-screen flex-col items-center justify-between p-10">
@@ -106,6 +123,9 @@ export default function Home() {
                     and
                     let&apos;s you encrypt your votes to prevent copy-trading and market
                     manipulations.{" "}
+                </div>
+                <div className="flex justify-end my-3">
+                    <Button onClick={() => router.push("/")}>Back to Home</Button>
                 </div>
                 <div className="ring-1 ring-zinc-700 rounded-xl p-8 w-full">
                     <div className="grid w-full gap-2 mt-10">
@@ -199,7 +219,8 @@ export default function Home() {
                             placeholder="Your subnet Id goes here."
                             readOnly
                         /> */}
-                        <Button onClick={() => deployMarket()}>
+                        <Button onClick={() => deployMarket()} disabled={deployMarketLoading}>
+                            {deployMarketLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                             Deploy contract
                         </Button>
                     </div>
