@@ -1,6 +1,50 @@
 export const contract = {
-  address: "0xEb905A3A74d144c898875093CB8ec1e1F53d8F97",
+  address: "0xB7bE738AFc5214304BD99d8376d592e3aa94001b",
   abi: [
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_marketId",
+          type: "uint256",
+        },
+        {
+          internalType: "bool",
+          name: "_prediction",
+          type: "bool",
+        },
+      ],
+      name: "buyVotes",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_marketId",
+          type: "uint256",
+        },
+      ],
+      name: "claimWinnings",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "_question",
+          type: "string",
+        },
+      ],
+      name: "createMarket",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
     {
       inputs: [],
       stateMutability: "nonpayable",
@@ -43,6 +87,24 @@ export const contract = {
       ],
       name: "MarketResolved",
       type: "event",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_marketId",
+          type: "uint256",
+        },
+        {
+          internalType: "bool",
+          name: "_outcome",
+          type: "bool",
+        },
+      ],
+      name: "resolveMarket",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
     },
     {
       anonymous: false,
@@ -99,65 +161,6 @@ export const contract = {
       ],
       name: "WinningsClaimed",
       type: "event",
-    },
-    {
-      inputs: [
-        {
-          internalType: "uint256",
-          name: "_marketId",
-          type: "uint256",
-        },
-        {
-          internalType: "bool",
-          name: "_prediction",
-          type: "bool",
-        },
-        {
-          internalType: "bytes",
-          name: "_encryptedVote",
-          type: "bytes",
-        },
-      ],
-      name: "buyVotes",
-      outputs: [],
-      stateMutability: "payable",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
-          internalType: "uint256",
-          name: "_marketId",
-          type: "uint256",
-        },
-      ],
-      name: "claimWinnings",
-      outputs: [],
-      stateMutability: "nonpayable",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
-          internalType: "string",
-          name: "_question",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "_publicKey",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "_sharedSecret",
-          type: "string",
-        },
-      ],
-      name: "createMarket",
-      outputs: [],
-      stateMutability: "nonpayable",
-      type: "function",
     },
     {
       inputs: [],
@@ -227,24 +230,6 @@ export const contract = {
         },
       ],
       stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
-          internalType: "uint256",
-          name: "_marketId",
-          type: "uint256",
-        },
-        {
-          internalType: "bool",
-          name: "_outcome",
-          type: "bool",
-        },
-      ],
-      name: "resolveMarket",
-      outputs: [],
-      stateMutability: "nonpayable",
       type: "function",
     },
   ],

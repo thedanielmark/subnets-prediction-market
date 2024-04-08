@@ -18,48 +18,78 @@ import {
   arbitrumSepolia,
   polygonMumbai,
 } from "wagmi/chains";
+import { API_URL } from "@/lib/utils";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { chainConfig } from "viem/zksync";
 const queryClient = new QueryClient();
 
-const localDevNet = {
-  id: 2930922759901093,
-  name: 'Local IPC Subnet',
-  network: 'Local IPC Subnet',
-  iconBackground: '#fff',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'tFIL',
-    symbol: 'tFIL',
-  },
-  rpcUrls: {
-    public: { http: ['http://localhost:8545'] },
-    default: { http: ['http://localhost:8545'] },
-  },
-  testnet: true,
-};
+const getChainConfig = async () => {
+  console.log('Getting chain config...')
+  const data = await fetch(`${API_URL}/subnet-chainId`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  const res = await data.json()
+  console.log(res)
+  if (!res) {
+    return polygonMumbai
+  }
+  return {
+    id: parseInt(JSON.parse(res.output).result),
+    name: 'Local IPC Subnet',
+    network: 'Local IPC Subnet',
+    iconBackground: '#fff',
+    nativeCurrency: {
+      decimals: 18,
+      name: 'tFIL',
+      symbol: 'tFIL',
+    },
+    rpcUrls: {
+      public: { http: ['https://localhost:8565/'] },
+      default: { http: ['https://localhost:8565/'] },
+    },
+    blockExplorers: {
+      default: { name: 'LocalDevNet', url: 'https://localhost:8565/' },
+    },
+    testnet: true,
+  }
 
-const config = getDefaultConfig({
-  appName: "Shady",
-  projectId:
-    process.env.NEXT_PUBLIC_PROJECT_ID || "2588db3d04914636093b01d564610991",
-  chains: [
-    // mainnet,
-    // optimism,
-    // arbitrum,
-    // sepolia,
-    // optimismSepolia,
-    // arbitrumSepolia,
-    // polygonMumbai,
-    localDevNet
-  ],
-  ssr: true, // If your dApp uses server side rendering (SSR)
-});
+}
+
+
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
+
+  const [chainConfig, setChainConfig] = React.useState<any>(null)
+  React.useEffect(() => {
+    getChainConfig().then((config) => {
+      setChainConfig(config)
+    })
+  }, [])
+
+  const config = getDefaultConfig({
+    appName: "Shady",
+    projectId:
+      process.env.NEXT_PUBLIC_PROJECT_ID || "2588db3d04914636093b01d564610991",
+    chains: [
+      // mainnet,
+      // optimism,
+      // arbitrum,
+      // sepolia,
+      // optimismSepolia,
+      // arbitrumSepolia,
+      // polygonMumbai,
+      chainConfig ? chainConfig : polygonMumbai
+    ],
+    ssr: true, // If your dApp uses server side rendering (SSR)
+  });
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>

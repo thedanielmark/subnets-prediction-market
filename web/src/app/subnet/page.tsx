@@ -10,16 +10,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { API_URL } from "@/lib/utils";
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input"
 
 
 export default function Home() {
-    const [operatorWalletAddress, setOperatorWalletAddress] = useState("0xa84aae174873882b41354c1bb46fbc315966067a")
-    const [subnetId, setSubnetId] = useState("/r314159/t410f5fl3pzoj4baizvsbc53nydofrfhihzdclckrvvy")
+    const [operatorWalletAddress, setOperatorWalletAddress] = useState()
+    const [subnetId, setSubnetId] = useState()
     const [createWalletLoading, setCreateWalletLoading] = useState(false)
     const [createSubnetLoading, setCreateSubnetLoading] = useState(false)
     const [createValidatorLoading, setCreateValidatorLoading] = useState(false)
     const [deploySubnetLoading, setDeploySubnetLoading] = useState(false)
     const [deployMarketLoading, setDeployMarketLoading] = useState(false)
+    const [chainConfigLoading, setChainConfigLoading] = useState(false)
+    const [chainDetails, setChainDetails] = useState({
+        url: "https://calibration-rpc.ipc.space",
+        hexId: "0x1",
+        decId: 1
+    })
     const router = useRouter();
 
     useEffect(() => { }, []);
@@ -111,6 +118,26 @@ export default function Home() {
         setDeployMarketLoading(false)
     }
 
+    const getChainConfig = async () => {
+        console.log('Getting chain config...')
+        setChainConfigLoading(true)
+        const data = await fetch(`${API_URL}/subnet-chainId`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        const res = await data.json()
+        console.log(res)
+        setChainDetails({
+            url: 'http://localhost:8545/',
+            hexId: JSON.parse(res.output).result,
+            decId: parseInt(JSON.parse(res.output).result)
+        })
+
+        setChainConfigLoading(false)
+    }
+
     return (
         <main className="container flex min-h-screen flex-col items-center justify-between p-10">
             <div className="absolute top-5 right-5">
@@ -124,19 +151,11 @@ export default function Home() {
                     let&apos;s you encrypt your votes to prevent copy-trading and market
                     manipulations.{" "}
                 </div>
-                <div className="flex justify-end my-3">
-                    <Button onClick={() => router.push("/")}>Back to Home</Button>
-                </div>
+
                 <div className="ring-1 ring-zinc-700 rounded-xl p-8 w-full">
                     <div className="grid w-full gap-2 mt-10">
                         <h1 className="font-bold">1) Create Subnet Wallet</h1>
-                        <Textarea
-                            className="dark:bg-[#111111] bg-zinc-200 ring-1 ring-black"
-                            value={operatorWalletAddress}
-                            // onChange={(e) => setQuestion(e.target.value)}
-                            placeholder="Operator subnet wallet address goes here."
-                            readOnly
-                        />
+                        <p>Your subnet wallet address : {operatorWalletAddress && operatorWalletAddress}</p>
                         <Button onClick={() => createWallet()} disabled={createWalletLoading}>
                             {createWalletLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 : null}
@@ -151,13 +170,7 @@ export default function Home() {
                     </div>
                     <div className="grid w-full gap-2 mt-10">
                         <h1 className="font-bold">2) Create Child Subnet</h1>
-                        <Textarea
-                            className="dark:bg-[#111111] bg-zinc-200 ring-1 ring-black"
-                            value={operatorWalletAddress}
-                            // onChange={(e) => setQuestion(e.target.value)}
-                            placeholder="Your subnet Id goes here."
-                            readOnly
-                        />
+                        <p>Your subnet ID : {subnetId && subnetId}</p>
                         <Button onClick={() => createSubnet()} disabled={createSubnetLoading}>
                             {createSubnetLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 : null}
@@ -167,17 +180,15 @@ export default function Home() {
                     <div className="grid w-full gap-2 mt-10">
                         <h1 className="font-bold">3) Create validator node</h1>
                         <div className="flex gap-3">
-                            <Textarea
+                            <Input
                                 className="dark:bg-[#111111] bg-zinc-200 ring-1 ring-black"
                                 value={operatorWalletAddress}
-                                // onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="Operator subnet wallet address goes here."
                                 readOnly
                             />
-                            <Textarea
+                            <Input
                                 className="dark:bg-[#111111] bg-zinc-200 ring-1 ring-black"
                                 value={subnetId}
-                                // onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="Your subnet Id goes here."
                                 readOnly
                             />
@@ -190,17 +201,15 @@ export default function Home() {
                     <div className="grid w-full gap-2 mt-10">
                         <h1 className="font-bold">4) Deploy subnet infrastructure</h1>
                         <div className="flex gap-3">
-                            <Textarea
+                            <Input
                                 className="dark:bg-[#111111] bg-zinc-200 ring-1 ring-black"
                                 value={operatorWalletAddress}
-                                // onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="Operator subnet wallet address goes here."
                                 readOnly
                             />
-                            <Textarea
+                            <Input
                                 className="dark:bg-[#111111] bg-zinc-200 ring-1 ring-black"
                                 value={subnetId}
-                                // onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="Your subnet Id goes here."
                                 readOnly
                             />
@@ -210,19 +219,27 @@ export default function Home() {
                             Deploy Subnet
                         </Button>
                     </div>
-                    <div className="grid w-full gap-2 mt-10">
+                    {/* <div className="grid w-full gap-2 mt-10">
                         <h1 className="font-bold">5) Yaaay.. Deploy your contract</h1>
-                        {/* <Textarea
-                            className="dark:bg-[#111111] bg-zinc-200 ring-1 ring-black"
-                            value={operatorWalletAddress}
-                            // onChange={(e) => setQuestion(e.target.value)}
-                            placeholder="Your subnet Id goes here."
-                            readOnly
-                        /> */}
                         <Button onClick={() => deployMarket()} disabled={deployMarketLoading}>
                             {deployMarketLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                             Deploy contract
                         </Button>
+                    </div> */}
+                    <div className="grid w-full gap-2 mt-10">
+                        <h1 className="font-bold">5) Yaaay.. Get your chain Configuration</h1>
+                        <Button onClick={() => getChainConfig()} disabled={chainConfigLoading}>
+                            {chainConfigLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            Get Chain Configuration
+                        </Button>
+                        <div className="flex justify-around">
+                            <p className="mt-2 font-medium">RPC Url : {chainDetails.url}</p>
+                            {/* <p className="mt-2 font-medium">Hex ChainId : {chainDetails.hexId}</p> */}
+                            <p className="mt-2 font-medium">Dec ChainId : {chainDetails.decId}</p>
+                        </div>
+                    </div>
+                    <div className="flex justify-center my-6">
+                        <Button onClick={() => router.push("/")}>Back to Home</Button>
                     </div>
                 </div>
                 <p className="text-md mt-3 text-center text-zinc-600">

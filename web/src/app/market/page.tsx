@@ -58,7 +58,7 @@ export default function Home() {
 
               {account?.address && (
                 <div className="mt-10 flex justify-center items-between flex-col w-full">
-                  <CreateMarket />
+                  {/* <CreateMarket /> */}
                   <ListMarkets />
                   <ResolveMarket marketId="1" />
                 </div>

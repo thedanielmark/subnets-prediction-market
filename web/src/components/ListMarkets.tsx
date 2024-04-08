@@ -6,12 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { useReadContract } from "wagmi";
 
 export default function ListMarkets() {
-  const { data: markets } = useReadContract({
+  const { data: markets, refetch: getMarketData } = useReadContract({
     address: contract.address as any,
     abi: contract.abi,
-    functionName: "markets",
+    functionName: "marketCount",
     args: [],
   });
+
+  useEffect(() => {
+    getMarketData().then(() => console.log(markets)) 
+  }, [])
 
   return (
     <div className="grid w-full mt-10 gap-2">
